@@ -3,6 +3,7 @@ const app = express();
 const dbConnect = require("./db/dbConnect");
 require("dotenv").config();
 const PORT = process.env.PORT;
+const ordersRoute = require("./routes/order");
 
 dbConnect();
 app.use(express.json());
@@ -14,7 +15,7 @@ app.get("/", (_, res) => {
   });
 });
 
-// app.use("/ghg-emissions", ghgEmissionsRoute);
+app.use("/orders", ordersRoute);
 
 app.listen(5000, () => {
   console.log(`Listening on port ${PORT}...`);
