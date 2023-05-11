@@ -38,13 +38,7 @@ router.post("/update", async (req, res) => {
     }
     return res.status(200).json(updatedOrder);
   } catch (error) {
-    const errorType = error.name;
-
-    if (errorType === "MongoServerError") {
-      res.status(409).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: error.message });
-    }
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -54,13 +48,41 @@ router.get("/list", async (req, res) => {
     const orders = await Order.find();
     return res.status(200).json(orders);
   } catch (error) {
-    const errorType = error.name;
+    res.status(500).json({ message: error.message });
+  }
+});
 
-    if (errorType === "MongoServerError") {
-      res.status(409).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: error.message });
+// find an order by order_id ----------------------------
+router.get("/search", async (req, res) => {
+  try {
+    const { order_id } = req.query;
+
+    const order = await Order.findOne({ order_id });
+    if (order === null) {
+      return res
+        .status(404)
+        .json({ order_id, message: "order_id does not exist" });
     }
+    return res.status(200).json(order);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// delete an order by order_id ----------------------------
+router.delete("/delete", async (req, res) => {
+  try {
+    const { order_id } = req.query;
+
+    const order = await Order.findOneAndDelete({ order_id });
+    if (order === null) {
+      return res
+        .status(404)
+        .json({ order_id, message: "order_id does not exist" });
+    }
+    return res.status(200).json(order);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
