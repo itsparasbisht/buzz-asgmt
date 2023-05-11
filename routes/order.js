@@ -1,5 +1,4 @@
 const Order = require("../model/order");
-
 const router = require("express").Router();
 
 // create order ----------------------------
@@ -50,11 +49,9 @@ router.get("/list", async (req, res) => {
       const orders = await Order.find({ order_date });
       return res.status(200).json(orders);
     }
-    return res
-      .status(422)
-      .json({
-        message: "provide order_date (query param) in yyyy/mm/dd format",
-      });
+    return res.status(422).json({
+      message: "provide order_date (query param) in yyyy/mm/dd format",
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -88,7 +85,7 @@ router.delete("/delete", async (req, res) => {
         .status(404)
         .json({ order_id, message: "order_id does not exist" });
     }
-    return res.status(200).json(order);
+    return res.status(200).json({ message: "order removed" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
