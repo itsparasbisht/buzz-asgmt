@@ -2,6 +2,7 @@ const Order = require("../model/order");
 
 const router = require("express").Router();
 
+// create order ----------------------------
 router.post("/create", async (req, res) => {
   try {
     const order = new Order({ ...req.body });
@@ -20,6 +21,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
+// update order ----------------------------
 router.post("/update", async (req, res) => {
   try {
     const data = req.body;
@@ -38,9 +40,23 @@ router.post("/update", async (req, res) => {
   } catch (error) {
     const errorType = error.name;
 
-    if (errorType === "ValidationError") {
-      res.status(422).json({ message: error.message });
-    } else if (errorType === "MongoServerError") {
+    if (errorType === "MongoServerError") {
+      res.status(409).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
+  }
+});
+
+// list all orders ----------------------------
+router.get("/list", async (req, res) => {
+  try {
+    const orders = await Order.find();
+    return res.status(200).json(orders);
+  } catch (error) {
+    const errorType = error.name;
+
+    if (errorType === "MongoServerError") {
       res.status(409).json({ message: error.message });
     } else {
       res.status(500).json({ message: error.message });
