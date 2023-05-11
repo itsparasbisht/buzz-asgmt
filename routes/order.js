@@ -42,11 +42,19 @@ router.post("/update", async (req, res) => {
   }
 });
 
-// list all orders ----------------------------
+// list all orders by order_date ----------------------------
 router.get("/list", async (req, res) => {
   try {
-    const orders = await Order.find();
-    return res.status(200).json(orders);
+    const { order_date } = req.query;
+    if (order_date) {
+      const orders = await Order.find({ order_date });
+      return res.status(200).json(orders);
+    }
+    return res
+      .status(422)
+      .json({
+        message: "provide order_date (query param) in yyyy/mm/dd format",
+      });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
